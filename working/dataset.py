@@ -6,8 +6,8 @@ from torch.utils.data import Dataset
 class TakwimuDataset(Dataset):
     def __init__(self, tokenizer, csv_path, max_len_french=100, max_len_target=100, task="train"):
         self.csv_path = csv_path
-        self.source_column = "sent1"
-        self.target_column = "sent2"
+        self.source_column = "French"
+        self.target_column = "Target"
         self.data = pd.read_csv(self.csv_path) #.sample(100).reset_index()
         self.max_len_french = max_len_french
         self.max_len_target = max_len_target
