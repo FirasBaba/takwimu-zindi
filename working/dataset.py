@@ -3,7 +3,7 @@ import os
 import pandas as pd
 from torch.utils.data import Dataset
 
-class YorubaDatasetSpecial(Dataset):
+class TakwimuDataset(Dataset):
     def __init__(self, tokenizer, csv_path, max_len_french=100, max_len_target=100, task="train"):
         self.csv_path = csv_path
         self.source_column = "sent1"
@@ -22,8 +22,8 @@ class YorubaDatasetSpecial(Dataset):
                 self.data.loc[index, self.source_column],
                 self.data.loc[index, self.target_column],
             )
-            
-        target_language = self.data.loc[index, "target_language"]
+
+        target_language = self.data.loc[index, "Target_Language"]
 
         input_ = f"translate French to {target_language}: " + str(input_) + " </s>"
         target = f"translate French to {target_language}: " + str(target) + " </s>"
