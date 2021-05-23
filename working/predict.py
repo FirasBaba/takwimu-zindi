@@ -19,7 +19,7 @@ args = parser.parse_args()
 
 model = mT5Translator(config.model_name_or_path, from_tf=True)
 
-model.load_state_dict(torch.load("weights/file.pth"))
+model.load_state_dict(torch.load("weights/first_.pth"))
 tokenizer = MT5Tokenizer.from_pretrained(config.tokenizer_name_or_path)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -33,7 +33,7 @@ model.eval()
 
 final_score = 0
 final_answer = []
-tqdm_data = tqdm(zip(data[["French"]].values, data[["Target_Language"]].values))
+tqdm_data = tqdm(zip(data[["French"]].values, data[["Target_Language"]].values), total=len(data))
 for french_sentence, target_language in tqdm_data:
 
     text =  f"translate French to {target_language[0]}: " + str(french_sentence[0]) + " </s>"

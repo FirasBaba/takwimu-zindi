@@ -8,7 +8,7 @@ class TakwimuDataset(Dataset):
         self.csv_path = csv_path
         self.source_column = "French"
         self.target_column = "Target"
-        self.data = pd.read_csv(self.csv_path) #.sample(100).reset_index()
+        self.data = pd.read_csv(self.csv_path)# .sample(100).reset_index()
         self.max_len_french = max_len_french
         self.max_len_target = max_len_target
         self.tokenizer = tokenizer
@@ -26,7 +26,7 @@ class TakwimuDataset(Dataset):
         target_language = self.data.loc[index, "Target_Language"]
 
         input_ = f"translate French to {target_language}: " + str(input_) + " </s>"
-        target = f"translate French to {target_language}: " + str(target) + " </s>"
+        v = f"translate French to {target_language}: " + str(target) + " </s>"
 
         # tokenize inputs
         tokenized_inputs = self.tokenizer.batch_encode_plus(
@@ -56,7 +56,7 @@ class TakwimuDataset(Dataset):
         ].squeeze()  # might need to squeeze
 
         return {
-            "en_sentence" : target,
+            "original_sentence" : target,
             "source_ids": source_ids,
             "source_mask": src_mask,
             "target_ids": target_ids,
