@@ -3,9 +3,10 @@ import os
 import warnings
 
 import pandas as pd
+import numpy as np
 import torch
 from tqdm import tqdm
-from transformers import MT5Tokenizer, T5ForConditionalGeneration
+from transformers import MT5Tokenizer
 
 from working import config
 from working.models import mT5Translator
@@ -19,7 +20,7 @@ args = parser.parse_args()
 
 model = mT5Translator(config.model_name_or_path, from_tf=True)
 
-model.load_state_dict(torch.load("weights/first_.pth"))
+model.load_state_dict(torch.load("weights/first_11__.pth"))
 tokenizer = MT5Tokenizer.from_pretrained(config.tokenizer_name_or_path)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -33,13 +34,22 @@ model.eval()
 
 final_score = 0
 final_answer = []
-tqdm_data = tqdm(zip(data[["French"]].values, data[["Target_Language"]].values), total=len(data))
-for french_sentence, target_language in tqdm_data:
 
-    text =  f"translate French to {target_language[0]}: " + str(french_sentence[0]) + " </s>"
+
+batch_size = 48
+n_steps = int(np.ceil(len(data[["French"]].values)/batch_size))
+tqdm_bar = tqdm((range(n_steps)))
+
+
+for i in tqdm_bar:
+    fr_sents =  data[["French"]].values[i*batch_size:(i+1)*batch_size]
+    tr_langs =  data[["Target_Language"]].values[i*batch_size:(i+1)*batch_size]
+    text = [f"translate French to {tr_lang[0]}: " + str(fr_sent[0]) + " </s>"
+            for tr_lang, fr_sent in zip(tr_langs,fr_sents)]
+
     max_len = 100
 
-    encoding = tokenizer.encode_plus(text,padding=True, return_tensors="pt")
+    encoding = tokenizer.batch_encode_plus(text,padding=True, return_tensors="pt")
     input_ids, attention_masks = encoding["input_ids"].to(device), encoding["attention_mask"].to(device)
 
 
@@ -55,9 +65,9 @@ for french_sentence, target_language in tqdm_data:
         num_beams= args.beam,
     )
 
-    for beam_output in beam_outputs:
-        sent = tokenizer.decode(beam_output, skip_special_tokens=True,clean_up_tokenization_spaces=True)
-        final_answer.append(sent)
+    sentences_batch = tokenizer.batch_decode(beam_outputs, skip_special_tokens=True,clean_up_tokenization_spaces=True)
+    final_answer.extend(sentences_batch)
+
 
 data["Target"] = final_answer
 sample = pd.merge(sample, data[["ID", "Target"]], on="ID", how="left")
