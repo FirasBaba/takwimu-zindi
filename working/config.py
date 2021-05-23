@@ -9,6 +9,7 @@ learning_rate = 8e-4
 weight_decay = 0.0
 adam_epsilon = 1e-8
 warmup_steps = 0
+pretrain_batch_size = 24
 train_batch_size = 24
 eval_batch_size = 24
 n_epochs = 12

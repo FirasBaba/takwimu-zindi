@@ -43,7 +43,7 @@ pretrain_ds = TakwimuDataset(
         task="train"
     )
 pretrain_dl = DataLoader(
-            pretrain_ds, batch_size=config.train_batch_size, num_workers=config.n_workers
+            pretrain_ds, batch_size=config.pretrain_batch_size, num_workers=config.n_workers
         )
 
 no_decay = ["bias", "LayerNorm.weight"]
@@ -66,7 +66,7 @@ optimizer_grouped_parameters = [
     },
 ]
 
-total_steps = len(pretrain_ds) // (config.train_batch_size)// config.gradient_accumulation_steps * float(config.n_epochs)
+total_steps = len(pretrain_ds) // (config.pretrain_batch_size)// config.gradient_accumulation_steps * float(config.n_epochs)
 
 optimizer = AdamW(
     optimizer_grouped_parameters,
