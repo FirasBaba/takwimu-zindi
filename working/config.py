@@ -3,8 +3,8 @@ model_name_or_path = "google/mt5-small"
 tokenizer_name_or_path = "google/mt5-small"
 
 
-max_seq_length_french = 100
-max_seq_length_target = 100
+max_seq_length_french = 50
+max_seq_length_target = 50
 learning_rate = 8e-4
 weight_decay = 0.0
 adam_epsilon = 1e-8
