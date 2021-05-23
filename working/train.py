@@ -146,9 +146,9 @@ for counter in range(config.n_epochs):
             val_loss += loss.item()
             epoch_iterator_val.set_postfix(batch_loss=(loss.item()), loss=(val_loss/(step+1)))
         print(f"EPOCH {counter}/{config.n_epochs}: Validation average loss: {val_loss/(step+1)}")
-        if val_loss < best_loss:
+        if (val_loss/(step+1)) < best_loss:
             print("Saving the Translator...")
-            best_loss = val_loss
+            best_loss = val_loss/(step+1)
             torch.save(model.state_dict(), f"weights/first_{counter}__.pth")
         else:
             print("Saving the Translator BAAAAAAAAAD...")
